@@ -2,7 +2,10 @@
 #include <sstream>
 #include <stdlib.h>
 #include <math.h>
-#include <time.h> 
+#include <ctime> 
+
+//Compile using "g++ -O3 main.cpp"
+//Run using "./a.out"
 
 using namespace std;
 
@@ -11,7 +14,8 @@ int main(void){
   cout << "Input number: ";
   std::cin >> number;
   
-  
+  std::clock_t start;
+  start = std::clock(); 
   
   // cout << number << "\n";
   double xCoords [number];
@@ -50,5 +54,6 @@ int main(void){
   }
   cout << "Smallest Distance: " << sqrt(minDist) << "\n";
   cout << "Coords: (" << minX << ", " << minY << ") (" << minX2 << ", " << minY2 << ")\n";
+  cout << "Time: " << ( std::clock() - start ) / (double) CLOCKS_PER_SEC << " seconds \n";
   
 }
