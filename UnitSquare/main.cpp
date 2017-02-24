@@ -13,14 +13,66 @@
 
 using namespace std;
 
-double xLinePoints[];
-double yLinePoints[];
-
-void plotPoints(double yCoordinates[], double xCoordinates[], int number){
-  int pointNumber[number];
+void plotPoints(double yCoordinates[], double xCoordinates[], int number, double minX, double minX2, double minY, double minY2){
+  int pointNumbers[number];
+  int imageArr[10000];
   for(int x = 0; x < number; x++){
-    pointNumber[x] = (int)10000*yCoordinates[x] + (int)100*xCoordinates[x];
+    pointNumbers[x] = (int)10000*yCoordinates[x] + (int)100*xCoordinates[x];
   }
+  for(int i = 0; i < 10000; i++){
+    imageArr[i] = 0;
+    for(int a = 0; a < number; a++){
+      if(pointNumbers[a] == i){
+        imageArr[i] = 1;
+      }
+    }
+  }
+
+  //Bresenham Algorithm
+  int x1 = (int)(100*minX);
+  int x2 = (int)(100*minX2);
+  int y1 = (int)(100*minY);
+  int y2 = (int)(100*minY2);
+
+  //int x1 = 50;
+  //int y1 = 75;
+  //int x2 = 60;
+  //int y2 = 85;
+
+  int deltaX = x2-x1;
+  int deltaY = y2-y1;
+
+  if(deltaX >= deltaY){
+    cout << "x>y\n";
+    int j = y1;
+    int e = deltaY - deltaX;
+    for(int i = x1; i < x2; i++){
+      cout << 100*j+i << "\n";
+      //illuminate
+      imageArr[100*j + i] = 1;
+      if(e >= 0){
+        j++;
+        e = e - deltaX;
+      }
+      e = e + deltaY;
+    }
+  }
+  if(deltaY > deltaX){
+    cout << "y>x\n";
+    int j = x1;
+    int e = deltaX - deltaY;
+    for(int i = y1; i < y2; i++){
+      cout << 100*j+i << "\n";
+      //illuminate
+      imageArr[100*j + i] = 1;
+      if(e >= 0){
+        j++;
+        e = e - deltaY;
+      }
+      e = e + deltaX;
+    }
+  }
+
   ofstream output;
   output.open("squarePoints.ppm");
   output << "P3 100 100 1";
@@ -28,13 +80,7 @@ void plotPoints(double yCoordinates[], double xCoordinates[], int number){
     if(i%100 == 0){
       output << '\n';
     }
-    int counter = 0;
-    for(int a=0; a<number; a++){
-      if(pointNumber[a] == i){
-        counter++;
-      }
-    }
-    if(counter > 0){
+    if(imageArr[i] == 1){
       output << "0 0 0 ";
     }
     else{
@@ -89,6 +135,5 @@ int main(void){
   cout << "Coords: (" << minX << ", " << minY << ") (" << minX2 << ", " << minY2 << ")\n";
   cout << "Time: " << ( std::clock() - start ) / (double) CLOCKS_PER_SEC << " seconds \n";
 
-  plotPoints(yCoords, xCoords, number);
+  plotPoints(yCoords, xCoords, number, minX, minX2, minY, minY2);
 }
-
