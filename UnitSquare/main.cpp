@@ -4,6 +4,7 @@
 #include <math.h>
 #include <ctime> 
 #include <climits>
+#include <cmath>
 #include <algorithm> // for std::find
 #include <iterator> // for std::begin, std::end
 #include <fstream>
@@ -17,8 +18,11 @@ void plotPoints(double yCoordinates[], double xCoordinates[], int number, double
   int pointNumbers[number];
   int imageArr[10000];
   for(int x = 0; x < number; x++){
-    pointNumbers[x] = (int)10000*yCoordinates[x] + (int)100*xCoordinates[x];
+    int yCoor = (int)100*yCoordinates[x];
+    int xCoor = (int)100*xCoordinates[x];
+    pointNumbers[x] =100*yCoor + xCoor;
   }
+  //cout << (int)10000*minY + (int)100*minX << " " << (int)10000*minY2+(int)100*minX2;
   for(int i = 0; i < 10000; i++){
     imageArr[i] = 0;
     for(int a = 0; a < number; a++){
@@ -34,11 +38,21 @@ void plotPoints(double yCoordinates[], double xCoordinates[], int number, double
   int y1 = (int)(100*minY);
   int y2 = (int)(100*minY2);
 
-  //int x1 = 50;
-  //int y1 = 75;
-  //int x2 = 60;
-  //int y2 = 85;
+  int deltax = x2 - x1;
+  int deltay = y2 - y1;
+  int deltae == std::abs(deltay / deltax)    // Assume deltax != 0 (line is not vertical),
+       // note that this division needs to be done in a way that preserves the fractional part
+  real error := deltaerr - 0.5
+  int y := y0
+  for x from x0 to x1 
+     plot(x,y)
+     error := error + deltaerr
+     if error ≥ 0.5 then
+         y := y + 1
+         error := error - 1.0
 
+  //cout << x1 << " " <<  y1  << " " << x2 << " " << y2 << "\n";
+  /*
   int deltaX = x2-x1;
   int deltaY = y2-y1;
 
@@ -47,7 +61,7 @@ void plotPoints(double yCoordinates[], double xCoordinates[], int number, double
     int j = y1;
     int e = deltaY - deltaX;
     for(int i = x1; i < x2; i++){
-      cout << 100*j+i << "\n";
+      //cout << 100*j+i << "\n";
       //illuminate
       imageArr[100*j + i] = 1;
       if(e >= 0){
@@ -62,9 +76,10 @@ void plotPoints(double yCoordinates[], double xCoordinates[], int number, double
     int j = x1;
     int e = deltaX - deltaY;
     for(int i = y1; i < y2; i++){
-      cout << 100*j+i << "\n";
+      //cout << 100*j+i << "\n";
       //illuminate
-      imageArr[100*j + i] = 1;
+      cout << i << " " << j << "\n";
+      imageArr[100*i + j] = 1;
       if(e >= 0){
         j++;
         e = e - deltaY;
@@ -72,6 +87,7 @@ void plotPoints(double yCoordinates[], double xCoordinates[], int number, double
       e = e + deltaX;
     }
   }
+  */
 
   ofstream output;
   output.open("squarePoints.ppm");
@@ -81,6 +97,7 @@ void plotPoints(double yCoordinates[], double xCoordinates[], int number, double
       output << '\n';
     }
     if(imageArr[i] == 1){
+      cout << "point at: " << i << "\n";
       output << "0 0 0 ";
     }
     else{
@@ -134,6 +151,12 @@ int main(void){
   cout << "Smallest Distance: " << sqrt(minDist) << "\n";
   cout << "Coords: (" << minX << ", " << minY << ") (" << minX2 << ", " << minY2 << ")\n";
   cout << "Time: " << ( std::clock() - start ) / (double) CLOCKS_PER_SEC << " seconds \n";
+
+  /*
+  for(int i = 0; i < number; i++){
+    cout << yCoords[i] << ", " << xCoords[i] << "\n";
+  }
+  */
 
   plotPoints(yCoords, xCoords, number, minX, minX2, minY, minY2);
 }
