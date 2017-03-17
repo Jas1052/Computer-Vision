@@ -14,6 +14,19 @@
 
 using namespace std;
 
+int indexofSmallestElement(double array[], int size)
+{
+    int index = 0;
+
+    for(int i = 1; i < size; i++)
+    {
+        if(array[i] < array[index])
+            index = i;              
+    }
+
+    return index;
+}
+
 void plotPoints(double yCoordinates[], double xCoordinates[], int number, double minX, double minX2, double minY, double minY2){
   int pointNumbers[number];
   int imageArr[10000];
@@ -38,56 +51,78 @@ void plotPoints(double yCoordinates[], double xCoordinates[], int number, double
   int y1 = (int)(100*minY);
   int y2 = (int)(100*minY2);
 
-  int deltax = x2 - x1;
-  int deltay = y2 - y1;
-  int deltae == std::abs(deltay / deltax)    // Assume deltax != 0 (line is not vertical),
-       // note that this division needs to be done in a way that preserves the fractional part
-  real error := deltaerr - 0.5
-  int y := y0
-  for x from x0 to x1 
-     plot(x,y)
-     error := error + deltaerr
-     if error ≥ 0.5 then
-         y := y + 1
-         error := error - 1.0
-
-  //cout << x1 << " " <<  y1  << " " << x2 << " " << y2 << "\n";
-  /*
-  int deltaX = x2-x1;
-  int deltaY = y2-y1;
-
-  if(deltaX >= deltaY){
-    cout << "x>y\n";
-    int j = y1;
-    int e = deltaY - deltaX;
-    for(int i = x1; i < x2; i++){
-      //cout << 100*j+i << "\n";
-      //illuminate
-      imageArr[100*j + i] = 1;
-      if(e >= 0){
-        j++;
-        e = e - deltaX;
-      }
-      e = e + deltaY;
+   const bool steep = (fabs(y2 - y1) > fabs(x2 - x1));
+    if(steep)
+    {
+      std::swap(x1, y1);
+      std::swap(x2, y2);
     }
-  }
-  if(deltaY > deltaX){
-    cout << "y>x\n";
-    int j = x1;
-    int e = deltaX - deltaY;
-    for(int i = y1; i < y2; i++){
-      //cout << 100*j+i << "\n";
-      //illuminate
-      cout << i << " " << j << "\n";
-      imageArr[100*i + j] = 1;
-      if(e >= 0){
-        j++;
-        e = e - deltaY;
-      }
-      e = e + deltaX;
+   
+    if(x1 > x2)
+    {
+      std::swap(x1, x2);
+      std::swap(y1, y2);
     }
+   
+    const float dx = x2 - x1;
+    const float dy = fabs(y2 - y1);
+   
+    float error = dx / 2.0f;
+    const int ystep = (y1 < y2) ? 1 : -1;
+    int y = (int)y1;
+   
+    const int maxX = (int)x2;
+   
+    for(int x=(int)x1; x<maxX; x++)
+    {
+      if(steep)
+      {
+          imageArr[(100*x)+y] = 1;
+      }
+      else
+      {
+          imageArr[(100*y)+x] = 1;
+      }
+   
+      error -= dy;
+      if(error < 0)
+      {
+          y += ystep;
+          error += dx;
+      }
+    }
+
+  //Finding extremes and drawing a square
+  int radius = 3;
+  //Bottommost
+  int indexOfBottomMost = indexofSmallestElement(yCoordinates, number);
+  int yBottom = (int)100*yCoordinates[indexOfBottomMost];
+  int xBottom = (int)100*xCoordinates[indexOfBottomMost];
+  imageArr[100*yBottom + xBottom] = 2;
+  for(int i = xBottom-radius; i <= xBottom+radius; i++){
+      imageArr[100*(yBottom+radius) + i] = 1;
+      imageArr[100*(yBottom-radius) + i] = 1;
+
   }
-  */
+  for(int i = yBottom-radius; i <= yBottom+radius; i++){
+      imageArr[100*(i) + xBottom+radius] = 1;
+      imageArr[100*(i) + xBottom-radius] = 1;
+  }
+
+  //Leftmost
+  int indexOfLeftMost = indexofSmallestElement(xCoordinates, number);
+  int yLeft = (int)100*yCoordinates[indexOfLeftMost];
+  int xLeft = (int)100*xCoordinates[indexOfLeftMost];
+  imageArr[100*yLeft + xLeft] = 2;
+  for(int i = xLeft-radius; i <= xLeft+radius; i++){
+      imageArr[100*(yLeft+radius) + i] = 1;
+      imageArr[100*(yLeft-radius) + i] = 1;
+
+  }
+  for(int i = yLeft-radius; i <= yLeft+radius; i++){
+      imageArr[100*(i) + xLeft+radius] = 1;
+      imageArr[100*(i) + xLeft-radius] = 1;
+  }
 
   ofstream output;
   output.open("squarePoints.ppm");
@@ -100,11 +135,15 @@ void plotPoints(double yCoordinates[], double xCoordinates[], int number, double
       cout << "point at: " << i << "\n";
       output << "0 0 0 ";
     }
+    else if(imageArr[i] == 2) {
+      output << "0 0 1 ";
+    }
     else{
       output << "1 1 1 ";
     }
   }
 }
+
 int main(void){
   int number;
   cout << "Input number: ";
