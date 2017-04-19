@@ -149,6 +149,7 @@ int main(void){
   cout << "Input number: ";
   std::cin >> number;
   
+  
   std::clock_t start;
   start = std::clock(); 
   
