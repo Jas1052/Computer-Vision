@@ -5,12 +5,10 @@
 #include <ctime> 
 #include <climits>
 #include <cmath>
-#include <algorithm> // for std::find
-#include <iterator> // for std::begin, std::end
+#include <algorithm> 
+#include <iterator> 
 #include <fstream>
 
-//Compile using "g++ -O3 main.cpp"
-//Run using "./a.out"
 
 using namespace std;
 
@@ -23,7 +21,7 @@ int indexofSmallestElement(double array[], int size)
         if(array[i] < array[index])
             index = i;              
     }
-
+yr
     return index;
 }
 
@@ -35,7 +33,7 @@ void plotPoints(double yCoordinates[], double xCoordinates[], int number, double
     int xCoor = (int)100*xCoordinates[x];
     pointNumbers[x] =100*yCoor + xCoor;
   }
-  //cout << (int)10000*minY + (int)100*minX << " " << (int)10000*minY2+(int)100*minX2;
+
   for(int i = 0; i < 10000; i++){
     imageArr[i] = 0;
     for(int a = 0; a < number; a++){
@@ -94,7 +92,7 @@ void plotPoints(double yCoordinates[], double xCoordinates[], int number, double
 
   //Finding extremes and drawing a square
   int radius = 3;
-  //Bottommost
+
   int indexOfBottomMost = indexofSmallestElement(yCoordinates, number);
   int yBottom = (int)100*yCoordinates[indexOfBottomMost];
   int xBottom = (int)100*xCoordinates[indexOfBottomMost];
